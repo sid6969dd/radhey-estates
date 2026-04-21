@@ -1,26 +1,55 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useParams, useRouter } from 'next/navigation';
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function PropertyDetail() {
+// 1. REUSE THE SLIDESHOW COMPONENT HERE
+function ImageSlideshow({ images }: { images: any }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const imageList = Array.isArray(images) ? images : [images].filter(Boolean);
+
+  useEffect(() => {
+    if (imageList.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % imageList.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [imageList]);
+
+  if (imageList.length === 0) return <div className="w-full h-full bg-slate-200 animate-pulse" />;
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      {imageList.map((src, index) => (
+        <img
+          key={index}
+          src={src}
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${
+            index === currentIndex ? "opacity-100 scale-105" : "opacity-0 scale-100"
+          }`}
+          alt="Property View"
+        />
+      ))}
+      {/* Dots for the details page */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+        {imageList.map((_, i) => (
+          <div key={i} className={`h-1.5 rounded-full transition-all ${i === currentIndex ? "w-8 bg-white" : "w-2 bg-white/50"}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function PropertyDetails() {
   const { id } = useParams();
   const router = useRouter();
   const [property, setProperty] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  
-  const [leadData, setLeadData] = useState({ name: "", phone: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 4000 })]);
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -29,162 +58,52 @@ export default function PropertyDetail() {
         .select('*')
         .eq('id', id)
         .single();
-
-      if (error || !data) {
-        router.push('/'); 
-      } else {
-        setProperty(data);
-      }
-      setLoading(false);
+      
+      if (!error && data) setProperty(data);
     };
-    if (id) fetchProperty();
-  }, [id, router]);
+    fetchProperty();
+  }, [id]);
 
-  const handleLeadSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!leadData.name || !leadData.phone) return alert("Please fill all fields");
-    setIsSubmitting(true);
-
-    const { error } = await supabase
-      .from('leads')
-      .insert([{ 
-        full_name: leadData.name, 
-        phone: leadData.phone,
-        property_area: property.area 
-      }]);
-
-    setIsSubmitting(false);
-    if (error) {
-      alert("Error: " + error.message);
-    } else {
-      alert("Success! Our executive will call you shortly.");
-      setLeadData({ name: "", phone: "" });
-    }
-  };
-
-  if (loading) return <div className="h-screen flex items-center justify-center font-black uppercase tracking-widest bg-[#FDFCFB]">Loading Asset...</div>;
-
-  const mediaItems = [...(property.images || [])];
-  if (property.video_url) mediaItems.push({ url: property.video_url, type: 'video' });
-  if (mediaItems.length === 0 && property.image_url) mediaItems.push({ url: property.image_url, type: 'image' });
+  if (!property) return <div className="min-h-screen flex items-center justify-center font-black tracking-widest text-slate-400">LOADING ASSET...</div>;
 
   return (
-    <main className="min-h-screen bg-[#FDFCFB] text-slate-900 pb-32 selection:bg-orange-100">
-      {/* NAVIGATION */}
-      <nav className="p-6 md:p-8 flex justify-between items-center border-b border-slate-100 bg-white sticky top-0 z-[100]">
-        <button onClick={() => router.back()} className="text-[10px] font-black tracking-widest uppercase flex items-center gap-2 hover:text-orange-500 transition-colors">
-          ← Back
+    <main className="min-h-screen bg-white text-slate-900">
+      {/* HERO SECTION WITH SLIDESHOW */}
+      <section className="relative h-[60vh] md:h-[80vh] bg-slate-100">
+        <button 
+          onClick={() => router.back()}
+          className="absolute top-8 left-8 z-50 bg-white/90 backdrop-blur-md p-4 rounded-full shadow-2xl hover:scale-110 transition-transform"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
-        <div className="text-xl font-black tracking-tighter uppercase cursor-pointer" onClick={() => router.push('/')}>
-            MS<span className="text-orange-500">Estate</span>
-        </div>
-      </nav>
-
-      {/* MAIN CONTENT AREA: Column on mobile, Grid on Desktop */}
-      <div className="max-w-7xl mx-auto mt-4 md:mt-10 px-4 md:px-6 flex flex-col lg:grid lg:grid-cols-2 gap-10 lg:gap-16">
         
-        {/* MEDIA BOX: Always first on mobile */}
-        <div className="relative w-full order-1">
-          <div className="overflow-hidden rounded-[2.5rem] md:rounded-[3rem] shadow-2xl bg-slate-100" ref={emblaRef}>
-            <div className="flex">
-              {mediaItems.map((item: any, index: number) => (
-                <div className="flex-[0_0_100%] min-w-0 h-[350px] sm:h-[450px] md:h-[650px] relative" key={index}>
-                  {item.type === 'video' || (typeof item === 'string' && item.endsWith('.mp4')) ? (
-                    <video 
-                      src={typeof item === 'string' ? item : item.url} 
-                      autoPlay muted loop playsInline 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img 
-                      src={typeof item === 'string' ? item : item.url} 
-                      className="w-full h-full object-cover" 
-                      alt="Property View"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
+        {/* UPDATED: Pass the image_url (which should be an array) here */}
+        <ImageSlideshow images={property.image_url} />
+      </section>
+
+      {/* CONTENT SECTION */}
+      <section className="max-w-4xl mx-auto px-6 py-16">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12 border-b border-slate-100 pb-12">
+          <div>
+            <span className="text-orange-600 font-black text-xs tracking-[0.3em] uppercase mb-4 block">{property.tag || 'Exclusive Listing'}</span>
+            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2">{property.area}</h1>
+            <p className="text-slate-400 font-medium text-lg italic">Premium Portfolio Asset</p>
           </div>
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full text-white text-[8px] md:text-[10px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">
-            Divine Gallery • Auto-Scroll
+          <div className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter">
+            {property.price ? `₹ ${property.price}` : 'POA'}
           </div>
         </div>
 
-        {/* PROPERTY INFO: Below media on mobile */}
-        <div className="flex flex-col justify-center order-2 text-left px-2 md:px-0">
-          <span className="text-orange-500 font-black tracking-[0.4em] uppercase text-[9px] mb-2 md:mb-4">
-            {property.tag || "Premium Asset"}
-          </span>
-          <h1 className="text-4xl md:text-7xl font-black tracking-tighter uppercase leading-[0.9] mb-4 md:mb-6">
-            {property.area}
-          </h1>
-          <p className="text-2xl md:text-3xl font-serif italic text-slate-400 mb-8 md:mb-10">
-            {property.price || "Price on Request"}
-          </p>
-
-          <div className="space-y-6 md:space-y-8 mb-10 md:mb-12">
-            <div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Description</h4>
-              <p className="text-base md:text-lg leading-relaxed text-slate-600 font-medium">
-                {property.description || "An exclusive residence in a prime location."}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 md:gap-4">
-              {property.features?.map((feature: string, i: number) => (
-                <div key={i} className="flex items-center gap-2 md:gap-3 p-3 md:p-4 bg-white border border-slate-50 rounded-2xl shadow-sm">
-                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
-                  <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider">{feature}</span>
-                </div>
-              ))}
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
+          <div className="space-y-6">
+            <h3 className="font-black text-xs uppercase tracking-widest text-slate-400">Specifications</h3>
+            <p className="text-xl leading-relaxed text-slate-600">{property.description || "Detailed specifications for this premier holding are available upon verified request."}</p>
           </div>
-
-          <button 
-            onClick={() => document.getElementById('contact-asset')?.scrollIntoView({ behavior: 'smooth' })}
-            className="w-full py-6 md:py-8 bg-slate-900 text-white rounded-[2rem] font-black text-xs tracking-[0.2em] uppercase hover:bg-orange-600 transition-all shadow-xl"
-          >
-            Acquire Private Details
-          </button>
-        </div>
-      </div>
-
-      {/* LEAD CAPTURE SECTION */}
-      <section id="contact-asset" className="mt-20 md:mt-32 max-w-4xl mx-auto px-4 md:px-6">
-        <div className="bg-white rounded-[3rem] md:rounded-[4rem] p-10 md:p-20 shadow-2xl border border-slate-50 relative overflow-hidden text-left">
-          <div className="relative z-10">
-            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4 text-slate-900 leading-none">
-              Request a <br />Private Tour
-            </h3>
-            <p className="text-slate-400 font-medium mb-10 md:mb-12 italic text-base md:text-lg">
-              Our executive for <span className="text-slate-900">{property.area}</span> will contact you shortly.
-            </p>
-            
-            <form onSubmit={handleLeadSubmit} className="space-y-4 md:space-y-6">
-              <input 
-                type="text" 
-                placeholder="Full Name" 
-                value={leadData.name}
-                onChange={(e) => setLeadData({...leadData, name: e.target.value})}
-                className="w-full p-6 md:p-8 bg-slate-50 rounded-2xl md:rounded-3xl outline-none font-bold text-slate-800 focus:ring-2 focus:ring-orange-500 transition-all border border-transparent focus:bg-white" 
-                required
-              />
-              <input 
-                type="tel" 
-                placeholder="Mobile Number" 
-                value={leadData.phone}
-                onChange={(e) => setLeadData({...leadData, phone: e.target.value})}
-                className="w-full p-6 md:p-8 bg-slate-50 rounded-2xl md:rounded-3xl outline-none font-bold text-slate-800 focus:ring-2 focus:ring-orange-500 transition-all border border-transparent focus:bg-white" 
-                required
-              />
-              <button 
-                disabled={isSubmitting}
-                className="w-full py-6 md:py-8 bg-slate-900 text-white rounded-2xl md:rounded-3xl font-black text-xs tracking-[0.3em] uppercase hover:bg-orange-600 transition-all shadow-2xl disabled:bg-slate-300"
-              >
-                {isSubmitting ? "Processing..." : "Confirm Request"}
-              </button>
-            </form>
+          <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
+             <h3 className="font-black text-xs uppercase tracking-widest text-slate-400 mb-6">Inquiry</h3>
+             <button className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest uppercase hover:bg-orange-600 transition-all">
+                Request Private Briefing
+             </button>
           </div>
         </div>
       </section>
