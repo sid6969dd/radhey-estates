@@ -1,4 +1,4 @@
-"use client";
+\"use client";
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { createClient } from '@supabase/supabase-js';
@@ -73,6 +73,7 @@ function SearchContent({ properties, setProperties }: { properties: any[], setPr
 }
 
 export default function Home() {
+  const router = useRouter();
   const [properties, setProperties] = useState<any[]>([]);
   const [leadData, setLeadData] = useState({ name: "", phone: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -100,7 +101,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans selection:bg-orange-100">
       
-      {/* 1. NAVIGATION - Silver/Steel Theme */}
+      {/* 1. NAVIGATION */}
       <nav className="fixed top-0 w-full z-[150] bg-gradient-to-b from-white/90 to-white/70 backdrop-blur-xl border-b border-slate-200/50 px-4 md:px-8 py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
@@ -125,18 +126,18 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* 2. HERO - Restored Depth */}
+      {/* 2. HERO */}
       <section className="relative min-h-[90vh] md:h-[95vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/20 to-[#F8F9FA] z-10"></div>
-          <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2071" className="w-full h-full object-cover scale-105 animate-pulse-slow" alt="Hero" />
+          <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2071" className="w-full h-full object-cover scale-105" alt="Hero" />
         </div>
 
         <div className="relative z-20 text-center px-6 w-full max-w-6xl">
-          <div className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] font-bold tracking-[0.4em] uppercase mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] font-bold tracking-[0.4em] uppercase mb-8">
             Established Legacy • Since 2002
           </div>
-          <h2 className="text-5xl md:text-[9rem] font-black text-white mb-8 tracking-tighter leading-[0.9] drop-shadow-2xl animate-in fade-in zoom-in-95 duration-1000">
+          <h2 className="text-5xl md:text-[9rem] font-black text-white mb-8 tracking-tighter leading-[0.9] drop-shadow-2xl">
             Secure <br />
             <span className="italic uppercase text-slate-200 opacity-90 drop-shadow-lg">Premier Holdings.</span>
           </h2>
@@ -147,7 +148,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. LISTINGS - Premium Silver Cards */}
+      {/* 3. LISTINGS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 px-6 max-w-7xl mx-auto py-24">
         {properties.map((item) => (
           <div key={item.id} className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-slate-100 p-3 transition-all duration-700 hover:shadow-[0_40px_80px_rgba(0,0,0,0.1)] hover:-translate-y-4">
@@ -160,7 +161,11 @@ export default function Home() {
             <div className="px-4 pb-4">
                 <h3 className="text-2xl font-black text-slate-900 mb-1 uppercase tracking-tight">{item.area}</h3>
                 <div className="text-xl font-bold text-orange-600/80 mb-6 italic">{item.price ? `₹ ${item.price}` : 'Portfolio Exclusive'}</div>
-                <button className="w-full bg-slate-50 hover:bg-slate-900 hover:text-white text-slate-900 py-4 rounded-2xl font-black text-[10px] tracking-[0.2em] uppercase transition-all duration-500 border border-slate-200">
+                {/* FIXED: Added onClick to redirect to property details */}
+                <button 
+                  onClick={() => router.push(`/property/${item.id}`)}
+                  className="w-full bg-slate-50 hover:bg-slate-900 hover:text-white text-slate-900 py-4 rounded-2xl font-black text-[10px] tracking-[0.2em] uppercase transition-all duration-500 border border-slate-200"
+                >
                     Access Details
                 </button>
             </div>
@@ -168,7 +173,7 @@ export default function Home() {
         ))}
       </div>
 
-      {/* 4. FORM - Steel Dark Theme */}
+      {/* 4. FORM */}
       <section id="sell" className="py-24 md:py-40 px-4 md:px-6">
         <div className="max-w-6xl mx-auto bg-gradient-to-br from-slate-900 to-[#1a1c20] rounded-[3rem] md:rounded-[5rem] p-10 md:p-24 relative overflow-hidden shadow-2xl border border-slate-800">
           <div className="absolute top-0 right-0 w-96 h-96 bg-orange-600/10 rounded-full blur-[120px] -mr-40 -mt-40"></div>
