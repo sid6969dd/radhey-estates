@@ -76,7 +76,7 @@ export default function PropertyDetail() {
           ← Back
         </button>
         <div className="text-xl font-black tracking-tighter uppercase cursor-pointer" onClick={() => router.push('/')}>
-            Radhey<span className="text-orange-500">Estate</span>
+            MS<span className="text-orange-500">Estate</span>
         </div>
       </nav>
 
