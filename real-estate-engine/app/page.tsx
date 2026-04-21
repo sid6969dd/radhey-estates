@@ -57,7 +57,7 @@ function SearchContent({ properties, setProperties }: { properties: any[], setPr
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => query.length > 1 && setShowDropdown(true)}
-            placeholder="Search Panipat Colony..." 
+            placeholder="Search any Panipat Colony..." 
             className="w-full md:flex-grow bg-white rounded-xl md:rounded-full px-6 py-4 text-slate-900 font-bold outline-none shadow-inner text-sm md:text-base" 
           />
           <button 
