@@ -176,7 +176,7 @@ export default function Home() {
               <p className="text-slate-400 text-lg md:text-xl font-light italic border-l-2 border-orange-600 pl-6">"Our mandate is the silent protection of your assets."</p>
             </div>
             <form onSubmit={handleLeadSubmit} className="md:w-1/2 w-full bg-white/95 backdrop-blur-xl rounded-[2rem] p-10 shadow-2xl">
-               <h4 className="text-slate-900 font-black text-2xl mb-8 uppercase tracking-tighter">Acquisition Inquiry</h4>
+               <h4 className="text-slate-900 font-black text-2xl mb-8 uppercase tracking-tighter">List Your Property</h4>
                <div className="space-y-5">
                   <input type="text" placeholder="Full Name" value={leadData.name} onChange={(e) => setLeadData({...leadData, name: e.target.value})} className="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold text-slate-900" required />
                   <input type="tel" placeholder="Mobile Line" value={leadData.phone} onChange={(e) => setLeadData({...leadData, phone: e.target.value})} className="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold text-slate-900" required />
