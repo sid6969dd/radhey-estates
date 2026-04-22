@@ -9,10 +9,10 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Helper for Flag Icons (Using standard circular icon placeholders)
+// Helper for Flag Icons
 const Flag = ({ code, name }: { code: string; name: string }) => (
   <div className="flex flex-col items-center gap-2 group z-30">
-    <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-100 shadow-sm transition-transform group-hover:scale-110">
+    <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-100 shadow-sm transition-transform group-hover:scale-110 bg-white">
       <img 
         src={`https://flagcdn.com/w80/${code}.png`} 
         alt={name} 
@@ -118,9 +118,9 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FCFBF9] text-slate-900 font-sansselection:bg-orange-100">
+    <main className="min-h-screen bg-[#FCFBF9] text-slate-900 font-sans selection:bg-orange-100">
       
-      {/* 1. NAVIGATION - CLASSY REFINED LOGO */}
+      {/* 1. NAVIGATION - LOGO FIXED */}
       <nav className="fixed top-0 w-full z-[500] bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-5">
@@ -129,7 +129,10 @@ export default function Home() {
                 src="https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png" 
                 alt="MS Logo" 
                 className="w-full h-full object-contain p-1"
-                onError={(e) => { e.currentTarget.src = "https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png"; }}
+                onError={(e) => {
+                  // Fallback if the custom URL fails
+                  e.currentTarget.src = "https://www.svgrepo.com/show/491950/property.svg";
+                }}
               />
             </div>
             <div className="flex flex-col">
@@ -161,10 +164,10 @@ export default function Home() {
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110 z-0" 
             alt="Real Estate" 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent z-10"></div>
           <div className="relative h-full flex flex-col justify-end p-10 md:p-20 z-20">
             <span className="text-orange-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-3">Real Estate Division</span>
-            <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] mb-8 uppercase tracking-tighter drop-shadow-lg">
+            <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] mb-8 uppercase tracking-tighter">
               Premium <br /><span className="font-light italic text-slate-200">Properties.</span>
             </h2>
             <SearchContent properties={properties} />
@@ -172,16 +175,15 @@ export default function Home() {
         </div>
 
         {/* Education Side */}
-        <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
+        <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden border-t md:border-t-0 md:border-l border-white/10">
           <img 
             src="https://images.unsplash.com/photo-1541339907198-e08756ebafe1?q=80&w=2070" 
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110 z-0" 
             alt="Education" 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent z-10"></div>
           <div className="relative h-full flex flex-col justify-end p-10 md:p-20 z-20">
-            {/* DESTINATION FLAGS */}
-            <div className="flex gap-6 mb-8 items-center border-l border-white/20 pl-6 z-30 relative">
+            <div className="flex gap-4 mb-8 items-center border-l border-white/20 pl-6 flex-wrap">
               <Flag code="gb" name="UK" />
               <Flag code="us" name="USA" />
               <Flag code="ca" name="Canada" />
@@ -189,12 +191,12 @@ export default function Home() {
               <Flag code="de" name="Germany" />
             </div>
             <span className="text-orange-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-3">Foreign Education</span>
-            <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] mb-8 uppercase tracking-tighter drop-shadow-lg">
+            <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] mb-8 uppercase tracking-tighter">
               Global <br /><span className="font-light italic text-slate-200">Admissions.</span>
             </h2>
             <button 
               onClick={() => router.push('/education')}
-              className="w-fit bg-white text-slate-900 px-12 py-5 rounded-full font-bold text-[10px] tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white transition-all shadow-2xl z-30"
+              className="w-fit bg-white text-slate-900 px-12 py-5 rounded-full font-bold text-[10px] tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white transition-all shadow-2xl"
             >
               Start Your Journey
             </button>
@@ -236,7 +238,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. CONTACT SECTION - LIST YOUR PROPERTIES ADDED */}
+      {/* 4. CONTACT SECTION */}
       <section id="contact" className="py-32 px-4 bg-slate-50">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-20">
@@ -246,26 +248,24 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Real Estate Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
-              <div className="flex justify-between items-start mb-10">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-10 gap-4">
                 <div>
                   <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Real Estate</h4>
                   <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Property Registration & Sales</p>
                 </div>
-                {/* INQUIRY TYPE SELECTOR */}
                 <div className="flex bg-slate-50 p-1 rounded-full border border-slate-100">
                    <button 
                     onClick={() => setLeadData({...leadData, type: 'buying'})}
                     className={`px-4 py-2 rounded-full text-[9px] font-bold uppercase transition-all ${leadData.type === 'buying' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 hover:text-slate-900'}`}
                    >
-                     I Want To Buy
+                     Buy
                    </button>
                    <button 
                     onClick={() => setLeadData({...leadData, type: 'listing'})}
                     className={`px-4 py-2 rounded-full text-[9px] font-bold uppercase transition-all ${leadData.type === 'listing' ? 'bg-orange-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-900'}`}
                    >
-                     List My Property
+                     Sell
                    </button>
                 </div>
               </div>
@@ -289,12 +289,11 @@ export default function Home() {
                   disabled={isSubmitting}
                   className="w-full py-5 bg-slate-900 text-white rounded-full font-black text-[10px] tracking-[0.4em] uppercase hover:bg-orange-600 transition-all shadow-xl mt-4"
                 >
-                  {isSubmitting ? "Processing..." : leadData.type === 'listing' ? "Request Listing Consultation" : "Submit Inquiry"}
+                  {isSubmitting ? "Processing..." : leadData.type === 'listing' ? "Request Listing" : "Submit Inquiry"}
                 </button>
               </form>
             </div>
 
-            {/* Education Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
               <div className="mb-10">
                 <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Education</h4>
