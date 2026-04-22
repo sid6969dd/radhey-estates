@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  制.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
@@ -174,7 +174,7 @@ export default function Home() {
         {/* Education Side */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
           <img 
-            src="https://images.unsplash.com/photo-1523050335102-c6744729ea24?q=80&w=2070" 
+            src="https://images.unsplash.com/photo-1541339907198-e08756ebafe1?q=80&w=2070" 
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
             alt="Education" 
           />
