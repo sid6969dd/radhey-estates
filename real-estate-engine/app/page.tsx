@@ -5,11 +5,11 @@ import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  制.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Helper for Flag Icons
+// Helper for Flag Icons (Using standard circular icon placeholders)
 const Flag = ({ code, name }: { code: string; name: string }) => (
   <div className="flex flex-col items-center gap-2 group">
     <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-100 shadow-sm transition-transform group-hover:scale-110">
@@ -120,15 +120,16 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#FCFBF9] text-slate-900 font-sans">
       
-      {/* 1. NAVIGATION */}
+      {/* 1. NAVIGATION - CLASSY REFINED LOGO */}
       <nav className="fixed top-0 w-full z-[500] bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-5">
             <div className="w-10 h-10 overflow-hidden rounded-lg bg-white border border-slate-100 flex items-center justify-center shadow-sm">
               <img 
-                src="https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png" 
+                src="/logo.png" 
                 alt="MS Logo" 
                 className="w-full h-full object-contain p-1"
+                onError={(e) => { e.currentTarget.src = "https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png"; }}
               />
             </div>
             <div className="flex flex-col">
@@ -157,10 +158,10 @@ export default function Home() {
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110 z-0" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
             alt="Real Estate" 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
           <div className="relative h-full flex flex-col justify-end p-10 md:p-20 z-20">
             <span className="text-orange-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-3">Real Estate Division</span>
             <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] mb-8 uppercase tracking-tighter">
@@ -170,15 +171,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Education Side - FIXED BACKGROUND VISIBILITY */}
+        {/* Education Side */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1541339907198-e08756ebafe1?q=80&w=2070" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110 z-0" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
             alt="Education" 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
           <div className="relative h-full flex flex-col justify-end p-10 md:p-20 z-20">
+            {/* DESTINATION FLAGS */}
             <div className="flex gap-6 mb-8 items-center border-l border-white/20 pl-6">
               <Flag code="gb" name="UK" />
               <Flag code="us" name="USA" />
@@ -234,7 +236,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. CONTACT SECTION */}
+      {/* 4. CONTACT SECTION - LIST YOUR PROPERTIES ADDED */}
       <section id="contact" className="py-32 px-4 bg-slate-50">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-20">
@@ -244,12 +246,14 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Real Estate Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
               <div className="flex justify-between items-start mb-10">
                 <div>
                   <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Real Estate</h4>
                   <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Property Registration & Sales</p>
                 </div>
+                {/* INQUIRY TYPE SELECTOR */}
                 <div className="flex bg-slate-50 p-1 rounded-full border border-slate-100">
                    <button 
                     onClick={() => setLeadData({...leadData, type: 'buying'})}
@@ -290,6 +294,7 @@ export default function Home() {
               </form>
             </div>
 
+            {/* Education Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
               <div className="mb-10">
                 <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Education</h4>
