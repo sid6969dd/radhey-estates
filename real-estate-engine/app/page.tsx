@@ -62,7 +62,7 @@ function SearchContent({ properties }: { properties: any[] }) {
       {showDropdown && suggestions.length > 0 && (
         <div className="absolute w-full mt-4 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[300]">
           {suggestions.map((s, i) => (
-            <div key={i} onClick={() => {setQuery(s); setShowDropdown(false); router.push(`/search?area=${encodeURIComponent(s)}`);}} className="px-6 py-4 hover:bg-slate-100 cursor-pointer font-bold border-b last:border-none">
+            <div key={i} onClick={() => {setQuery(s); setShowDropdown(false); router.push(`/search?area=${encodeURIComponent(s)}`);}} className="px-6 py-4 hover:bg-slate-100 cursor-pointer font-bold border-b last:border-none transition-colors">
               {s}
             </div>
           ))}
@@ -99,7 +99,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans">
+    <main className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans selection:bg-orange-100">
       
       {/* 1. NAVIGATION */}
       <nav className="fixed top-0 w-full z-[500] bg-gradient-to-b from-white/95 to-white/80 backdrop-blur-xl border-b border-slate-200 px-4 md:px-8 py-3">
@@ -114,12 +114,17 @@ export default function Home() {
               />
             </div>
             <h1 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">
-              MS<span className="text-orange-600">Estates</span>
+              MSestates <span className="text-orange-600">& Education</span>
             </h1>
           </div>
-          <a href="#sell" className="bg-slate-900 text-white px-6 md:px-10 py-3 rounded-full font-black text-[9px] tracking-widest uppercase hover:bg-orange-600 transition-colors">
-            Register Asset
-          </a>
+          <div className="flex gap-4">
+            <a href="#education" className="hidden md:block bg-slate-100 text-slate-900 px-6 py-3 rounded-full font-black text-[9px] tracking-widest uppercase hover:bg-slate-200 transition-all">
+              Study Abroad
+            </a>
+            <a href="#sell" className="bg-slate-900 text-white px-6 md:px-10 py-3 rounded-full font-black text-[9px] tracking-widest uppercase hover:bg-orange-600 transition-colors">
+              Register Asset
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -140,7 +145,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. LISTINGS GRID - Restored Silver Textures */}
+      {/* 3. EDUCATION SECTION - NEW */}
+      <section id="education" className="py-24 px-4 bg-white relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-gradient-to-br from-slate-50 to-slate-200 rounded-[3rem] p-8 md:p-20 border border-white flex flex-col md:flex-row items-center gap-12 shadow-inner">
+            <div className="md:w-3/5">
+              <span className="bg-orange-600 text-white px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase mb-6 inline-block">Global Academic Path</span>
+              <h2 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter uppercase leading-[0.9] mb-8">
+                Your Future in <br />
+                <span className="text-orange-600 italic">UK or Australia.</span>
+              </h2>
+              <p className="text-slate-500 text-lg md:text-xl font-medium max-w-xl mb-10 italic">
+                From luxury living to global learning. We facilitate admissions in top-tier universities across the United Kingdom and Australia.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <div className="bg-white px-8 py-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 group hover:border-orange-500 transition-all cursor-pointer" onClick={() => router.push('/education')}>
+                   <span className="text-3xl">🇬🇧</span>
+                   <span className="font-black uppercase tracking-widest text-xs">UK Universities</span>
+                </div>
+                <div className="bg-white px-8 py-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 group hover:border-orange-500 transition-all cursor-pointer" onClick={() => router.push('/education')}>
+                   <span className="text-3xl">🇦🇺</span>
+                   <span className="font-black uppercase tracking-widest text-xs">Australia Campus</span>
+                </div>
+              </div>
+            </div>
+            <div className="md:w-2/5 w-full">
+               <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
+                  <div className="relative z-10">
+                    <h4 className="text-2xl font-black uppercase mb-6">Course Consultation</h4>
+                    <form onSubmit={(e) => { e.preventDefault(); router.push('/education'); }} className="space-y-4">
+                      <input type="text" placeholder="Student Name" className="w-full bg-white/10 border border-white/20 p-4 rounded-xl outline-none focus:bg-white/20 transition-all font-bold" />
+                      <input type="tel" placeholder="Contact Number" className="w-full bg-white/10 border border-white/20 p-4 rounded-xl outline-none focus:bg-white/20 transition-all font-bold" />
+                      <button className="w-full py-4 bg-orange-600 hover:bg-orange-500 text-white font-black text-xs tracking-widest uppercase rounded-xl transition-all shadow-lg">
+                        Apply for Intake 2026
+                      </button>
+                    </form>
+                  </div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/20 blur-3xl -mr-16 -mt-16"></div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. LISTINGS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 px-6 max-w-7xl mx-auto py-24 relative z-[100]">
         {properties.map((item) => (
           <div key={item.id} className="group bg-white rounded-[2rem] border border-slate-100 p-3 shadow-lg transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl relative z-[110]">
@@ -167,7 +215,7 @@ export default function Home() {
         ))}
       </div>
 
-      {/* 4. FORM SECTION */}
+      {/* 5. FORM SECTION */}
       <section id="sell" className="py-24 px-4 relative z-[100]">
         <div className="max-w-6xl mx-auto bg-gradient-to-br from-slate-900 to-[#1a1c20] rounded-[3rem] p-10 md:p-20 border border-slate-800 shadow-3xl">
           <div className="flex flex-col md:flex-row items-center gap-16">
@@ -176,7 +224,7 @@ export default function Home() {
               <p className="text-slate-400 text-lg md:text-xl font-light italic border-l-2 border-orange-600 pl-6">"Our mandate is the silent protection of your assets."</p>
             </div>
             <form onSubmit={handleLeadSubmit} className="md:w-1/2 w-full bg-white/95 backdrop-blur-xl rounded-[2rem] p-10 shadow-2xl">
-               <h4 className="text-slate-900 font-black text-2xl mb-8 uppercase tracking-tighter">List Your Property</h4>
+               <h4 className="text-slate-900 font-black text-2xl mb-8 uppercase tracking-tighter">Property Registration</h4>
                <div className="space-y-5">
                   <input type="text" placeholder="Full Name" value={leadData.name} onChange={(e) => setLeadData({...leadData, name: e.target.value})} className="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold text-slate-900" required />
                   <input type="tel" placeholder="Mobile Line" value={leadData.phone} onChange={(e) => setLeadData({...leadData, phone: e.target.value})} className="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold text-slate-900" required />
