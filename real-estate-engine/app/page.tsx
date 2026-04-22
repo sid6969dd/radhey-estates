@@ -9,6 +9,20 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+// Helper for Flag Icons (Using standard circular icon placeholders)
+const Flag = ({ code, name }: { code: string; name: string }) => (
+  <div className="flex flex-col items-center gap-2 group">
+    <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-100 shadow-sm transition-transform group-hover:scale-110">
+      <img 
+        src={`https://flagcdn.com/w80/${code}.png`} 
+        alt={name} 
+        className="w-full h-full object-cover"
+      />
+    </div>
+    <span className="text-[8px] font-bold uppercase tracking-widest text-white/70 group-hover:text-white transition-colors">{name}</span>
+  </div>
+);
+
 function SearchContent({ properties }: { properties: any[] }) {
   const router = useRouter();
   const [query, setQuery] = useState(""); 
@@ -73,7 +87,7 @@ function SearchContent({ properties }: { properties: any[] }) {
 export default function Home() {
   const router = useRouter();
   const [properties, setProperties] = useState<any[]>([]);
-  const [leadData, setLeadData] = useState({ name: "", phone: "" });
+  const [leadData, setLeadData] = useState({ name: "", phone: "", type: "buying" });
   const [eduLeadData, setEduLeadData] = useState({ name: "", phone: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -90,26 +104,26 @@ export default function Home() {
     const data = type === 'estate' ? leadData : eduLeadData;
     if (!data.name || !data.phone) return alert("Please enter your name and phone number.");
     setIsSubmitting(true);
-    const { error } = await supabase.from('leads').insert([{ 
-      full_name: data.name, 
-      phone: data.phone, 
-      property_area: type === 'estate' ? "Real Estate Inquiry" : "Education Inquiry" 
-    }]);
+    
+    const payload = type === 'estate' 
+      ? { full_name: data.name, phone: data.phone, property_area: `RE: ${leadData.type.toUpperCase()}` }
+      : { full_name: data.name, phone: data.phone, property_area: "Education Inquiry" };
+
+    const { error } = await supabase.from('leads').insert([payload]);
     setIsSubmitting(false);
     if (!error) {
-      alert("Thank you. We will contact you shortly.");
-      type === 'estate' ? setLeadData({ name: "", phone: "" }) : setEduLeadData({ name: "", phone: "" });
+      alert("Thank you. Our consultant will contact you shortly.");
+      type === 'estate' ? setLeadData({ name: "", phone: "", type: "buying" }) : setEduLeadData({ name: "", phone: "" });
     }
   };
 
   return (
     <main className="min-h-screen bg-[#FCFBF9] text-slate-900 font-sans">
       
-      {/* 1. NAVIGATION */}
+      {/* 1. NAVIGATION - CLASSY REFINED LOGO */}
       <nav className="fixed top-0 w-full z-[500] bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            {/* LOGO CONTAINER */}
+          <div className="flex items-center gap-5">
             <div className="w-10 h-10 overflow-hidden rounded-lg bg-white border border-slate-100 flex items-center justify-center shadow-sm">
               <img 
                 src="/logo.png" 
@@ -118,15 +132,21 @@ export default function Home() {
                 onError={(e) => { e.currentTarget.src = "https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png"; }}
               />
             </div>
-            <h1 className="text-lg font-black uppercase tracking-widest text-slate-900">
-              MSestates <span className="text-orange-600">&</span> Education
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-xl font-light uppercase tracking-[0.3em] text-slate-900 leading-none">
+                MS<span className="font-black">ESTATES</span>
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="h-px w-4 bg-orange-600"></div>
+                <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-400">Education Advisory</span>
+              </div>
+            </div>
           </div>
-          <div className="hidden md:flex gap-8 items-center font-bold text-[10px] uppercase tracking-widest">
+          <div className="hidden md:flex gap-10 items-center font-bold text-[10px] uppercase tracking-[0.2em]">
             <a href="#properties" className="hover:text-orange-600 transition-colors">Properties</a>
-            <a href="#contact" className="hover:text-orange-600 transition-colors">Contact Us</a>
-            <button onClick={() => router.push('/education')} className="bg-slate-900 text-white px-6 py-2.5 rounded-full hover:bg-orange-600 transition-all">
-              Apply Now
+            <a href="#contact" className="hover:text-orange-600 transition-colors">Contact</a>
+            <button onClick={() => router.push('/education')} className="bg-slate-900 text-white px-7 py-3 rounded-full hover:bg-orange-600 transition-all shadow-lg">
+              Admissions 2026
             </button>
           </div>
         </div>
@@ -138,14 +158,14 @@ export default function Home() {
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
             alt="Real Estate" 
           />
-          <div className="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition-colors"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
           <div className="relative h-full flex flex-col justify-end p-10 md:p-20 z-20">
-            <span className="text-orange-400 font-bold text-[10px] tracking-[0.3em] uppercase mb-2">Real Estate Services</span>
-            <h2 className="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
-              Find Your <br />Dream Home.
+            <span className="text-orange-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-3">Real Estate Division</span>
+            <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] mb-8 uppercase tracking-tighter">
+              Premium <br /><span className="font-light italic text-slate-200">Properties.</span>
             </h2>
             <SearchContent properties={properties} />
           </div>
@@ -155,113 +175,151 @@ export default function Home() {
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1523050335102-c6744729ea24?q=80&w=2070" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
             alt="Education" 
           />
-          <div className="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition-colors"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
           <div className="relative h-full flex flex-col justify-end p-10 md:p-20 z-20">
-            <span className="text-orange-400 font-bold text-[10px] tracking-[0.3em] uppercase mb-2">Foreign Education</span>
-            <h2 className="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
-              Study at Top <br />Universities.
+            {/* DESTINATION FLAGS */}
+            <div className="flex gap-6 mb-8 items-center border-l border-white/20 pl-6">
+              <Flag code="gb" name="UK" />
+              <Flag code="us" name="USA" />
+              <Flag code="ca" name="Canada" />
+              <Flag code="au" name="Australia" />
+              <Flag code="de" name="Germany" />
+            </div>
+            <span className="text-orange-400 font-bold text-[10px] tracking-[0.4em] uppercase mb-3">Foreign Education</span>
+            <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] mb-8 uppercase tracking-tighter">
+              Global <br /><span className="font-light italic text-slate-200">Admissions.</span>
             </h2>
             <button 
               onClick={() => router.push('/education')}
-              className="w-fit bg-white text-slate-900 px-10 py-4 rounded-full font-bold text-[11px] tracking-widest uppercase hover:bg-orange-600 hover:text-white transition-all shadow-xl"
+              className="w-fit bg-white text-slate-900 px-12 py-5 rounded-full font-bold text-[10px] tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white transition-all shadow-2xl"
             >
-              Learn More
+              Start Your Journey
             </button>
           </div>
         </div>
       </section>
 
       {/* 3. PROPERTY SECTION */}
-      <section id="properties" className="py-24 px-6 bg-white">
+      <section id="properties" className="py-32 px-6 bg-white">
         <div className="max-w-[1200px] mx-auto">
-          <div className="mb-16">
-            <h3 className="text-4xl md:text-5xl font-black uppercase text-slate-900 mb-4">Top Properties</h3>
-            <p className="text-slate-500 font-medium">Best residential and commercial options in Gurgaon & NCR.</p>
+          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-6">
+            <div className="max-w-xl">
+              <span className="text-orange-600 font-bold text-[10px] tracking-[0.4em] uppercase mb-4 block">Our Portfolio</span>
+              <h3 className="text-5xl font-black uppercase text-slate-900 leading-none">Featured <br />Holdings</h3>
+            </div>
+            <p className="text-slate-400 text-sm font-medium italic border-l-2 border-orange-600 pl-6 py-2">
+              Curated selection of North India's most valuable real estate assets.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {properties.map((item) => (
               <div key={item.id} className="group cursor-pointer" onClick={() => router.push(`/property/${item.id}`)}>
-                <div className="aspect-square rounded-3xl overflow-hidden mb-6 shadow-md relative">
+                <div className="aspect-[4/5] rounded-[2rem] overflow-hidden mb-8 shadow-xl relative">
                   <img 
                     src={item.image_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070'} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                     alt={item.area} 
                   />
-                  <div className="absolute bottom-4 left-4 bg-white/90 px-4 py-1 rounded-full text-[10px] font-bold uppercase text-slate-900">
-                    {item.tag || 'New'}
+                  <div className="absolute top-6 right-6 bg-white/95 px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-900 shadow-lg">
+                    {item.tag || 'Exclusive'}
                   </div>
                 </div>
-                <h4 className="text-xl font-black text-slate-900 mb-1">{item.area}</h4>
-                <p className="text-orange-600 font-bold">{item.price ? `₹ ${item.price}` : 'Contact for Price'}</p>
+                <h4 className="text-2xl font-black uppercase tracking-tight text-slate-900 mb-1">{item.area}</h4>
+                <p className="text-xl font-light text-orange-600 italic">{item.price ? `₹ ${item.price}` : 'Price on Request'}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 4. CONTACT SECTION */}
-      <section id="contact" className="py-24 px-4 bg-slate-50">
-        <div className="max-w-[1100px] mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black uppercase text-slate-900">Get In Touch</h2>
-            <p className="text-slate-500 mt-2">Leave your details and we will call you back.</p>
+      {/* 4. CONTACT SECTION - LIST YOUR PROPERTIES ADDED */}
+      <section id="contact" className="py-32 px-4 bg-slate-50">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-20">
+            <span className="text-[10px] font-black tracking-[0.6em] uppercase text-orange-600 mb-4 block">Consultation</span>
+            <h2 className="text-5xl font-black uppercase tracking-tighter text-slate-900">Get In Touch.</h2>
+            <div className="h-1 w-20 bg-slate-200 mx-auto mt-6"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Property Form */}
-            <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100">
-              <h4 className="text-2xl font-black text-slate-900 mb-6">Property Inquiry</h4>
-              <form onSubmit={(e) => handleLeadSubmit(e, 'estate')} className="space-y-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Real Estate Form */}
+            <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
+              <div className="flex justify-between items-start mb-10">
+                <div>
+                  <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Real Estate</h4>
+                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Property Registration & Sales</p>
+                </div>
+                {/* INQUIRY TYPE SELECTOR */}
+                <div className="flex bg-slate-50 p-1 rounded-full border border-slate-100">
+                   <button 
+                    onClick={() => setLeadData({...leadData, type: 'buying'})}
+                    className={`px-4 py-2 rounded-full text-[9px] font-bold uppercase transition-all ${leadData.type === 'buying' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 hover:text-slate-900'}`}
+                   >
+                     I Want To Buy
+                   </button>
+                   <button 
+                    onClick={() => setLeadData({...leadData, type: 'listing'})}
+                    className={`px-4 py-2 rounded-full text-[9px] font-bold uppercase transition-all ${leadData.type === 'listing' ? 'bg-orange-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-900'}`}
+                   >
+                     List My Property
+                   </button>
+                </div>
+              </div>
+
+              <form onSubmit={(e) => handleLeadSubmit(e, 'estate')} className="space-y-6">
                 <input 
                   type="text" 
-                  placeholder="Your Name" 
+                  placeholder="Full Name" 
                   value={leadData.name}
                   onChange={(e) => setLeadData({...leadData, name: e.target.value})}
-                  className="w-full bg-slate-50 px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-orange-600/20 font-semibold" 
+                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
                 />
                 <input 
                   type="tel" 
-                  placeholder="Phone Number" 
+                  placeholder="Mobile Number" 
                   value={leadData.phone}
                   onChange={(e) => setLeadData({...leadData, phone: e.target.value})}
-                  className="w-full bg-slate-50 px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-orange-600/20 font-semibold" 
+                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
                 />
                 <button 
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-slate-900 text-white rounded-full font-bold text-[11px] tracking-widest uppercase hover:bg-orange-600 transition-all"
+                  className="w-full py-5 bg-slate-900 text-white rounded-full font-black text-[10px] tracking-[0.4em] uppercase hover:bg-orange-600 transition-all shadow-xl mt-4"
                 >
-                  {isSubmitting ? "Sending..." : "Submit Inquiry"}
+                  {isSubmitting ? "Processing..." : leadData.type === 'listing' ? "Request Listing Consultation" : "Submit Inquiry"}
                 </button>
               </form>
             </div>
 
             {/* Education Form */}
-            <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100">
-              <h4 className="text-2xl font-black text-slate-900 mb-6">Education Inquiry</h4>
-              <form onSubmit={(e) => handleLeadSubmit(e, 'edu')} className="space-y-5">
+            <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
+              <div className="mb-10">
+                <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Education</h4>
+                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">International Admissions Advisory</p>
+              </div>
+              <form onSubmit={(e) => handleLeadSubmit(e, 'edu')} className="space-y-6">
                 <input 
                   type="text" 
                   placeholder="Student Name" 
                   value={eduLeadData.name}
                   onChange={(e) => setEduLeadData({...eduLeadData, name: e.target.value})}
-                  className="w-full bg-slate-50 px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-orange-600/20 font-semibold" 
+                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
                 />
                 <input 
                   type="tel" 
-                  placeholder="Phone Number" 
+                  placeholder="Contact Number" 
                   value={eduLeadData.phone}
                   onChange={(e) => setEduLeadData({...eduLeadData, phone: e.target.value})}
-                  className="w-full bg-slate-50 px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-orange-600/20 font-semibold" 
+                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
                 />
                 <button 
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-orange-600 text-white rounded-full font-bold text-[11px] tracking-widest uppercase hover:bg-slate-900 transition-all"
+                  className="w-full py-5 bg-orange-600 text-white rounded-full font-black text-[10px] tracking-[0.4em] uppercase hover:bg-slate-900 transition-all shadow-xl mt-4"
                 >
-                  {isSubmitting ? "Sending..." : "Request Call"}
+                  {isSubmitting ? "Processing..." : "Request Briefing"}
                 </button>
               </form>
             </div>
@@ -270,17 +328,35 @@ export default function Home() {
       </section>
 
       {/* 5. FOOTER */}
-      <footer className="py-12 bg-white px-8 border-t border-slate-100">
-        <div className="max-w-[1400px] mx-auto flex flex-col md:row justify-between items-center gap-6">
-          <h1 className="text-lg font-black uppercase tracking-widest">
-            MSestates <span className="text-orange-600">&</span> Education
-          </h1>
-          <div className="flex gap-6 text-[10px] font-bold uppercase text-slate-400">
-            <span className="hover:text-slate-900 cursor-pointer">LinkedIn</span>
-            <span className="hover:text-slate-900 cursor-pointer">Instagram</span>
-            <span className="hover:text-slate-900 cursor-pointer">Privacy Policy</span>
+      <footer className="py-24 bg-white px-8 border-t border-slate-100">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+            <div>
+              <h1 className="text-2xl font-light uppercase tracking-[0.4em] text-slate-900 leading-none">
+                MS<span className="font-black">ESTATES</span>
+              </h1>
+              <p className="text-slate-300 text-[9px] font-bold uppercase tracking-widest mt-4">Premier Real Estate & Education Advisory 2026</p>
+            </div>
+            <div className="flex gap-20">
+              <div className="space-y-4">
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Connect</h5>
+                <div className="flex flex-col gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <span className="hover:text-orange-600 cursor-pointer transition-colors">LinkedIn</span>
+                  <span className="hover:text-orange-600 cursor-pointer transition-colors">Instagram</span>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Legal</h5>
+                <div className="flex flex-col gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <span className="hover:text-orange-600 cursor-pointer transition-colors">Privacy</span>
+                  <span className="hover:text-orange-600 cursor-pointer transition-colors">Terms</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">© 2026 MSestates. All Rights Reserved.</p>
+          <div className="pt-12 border-t border-slate-50 flex justify-between items-center">
+            <p className="text-[9px] text-slate-300 font-black uppercase tracking-[0.5em]">© 2026 MSestates. Beyond Excellence.</p>
+          </div>
         </div>
       </footer>
     </main>
