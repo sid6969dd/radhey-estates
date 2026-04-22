@@ -40,29 +40,29 @@ function SearchContent({ properties }: { properties: any[] }) {
   }, [query]);
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto z-[210] px-4 md:px-0" ref={dropdownRef}>
-      <div className="bg-white/10 backdrop-blur-3xl p-2 md:p-3 rounded-2xl md:rounded-full border border-white/30 shadow-2xl">
-        <div className="flex flex-col md:flex-row items-center gap-2">
+    <div className="relative w-full max-w-xl mx-auto z-[210]" ref={dropdownRef}>
+      <div className="bg-white/5 backdrop-blur-2xl p-1.5 rounded-full border border-white/10 shadow-2xl">
+        <div className="flex items-center">
           <input 
             type="text" 
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => query.length > 1 && setShowDropdown(true)}
-            placeholder="Search Panipat Colony..." 
-            className="w-full md:flex-grow bg-white/90 rounded-xl md:rounded-full px-6 py-4 text-slate-900 font-bold outline-none text-sm md:text-base" 
+            placeholder="Search Estates..." 
+            className="w-full bg-transparent px-6 py-3 text-white placeholder:text-slate-400 font-medium outline-none text-sm" 
           />
           <button 
             onClick={() => query.trim() && router.push(`/search?area=${encodeURIComponent(query)}`)}
-            className="w-full md:w-auto bg-slate-900 hover:bg-orange-600 text-white px-8 py-4 md:py-5 rounded-xl md:rounded-full font-black text-[10px] md:text-xs tracking-widest transition-all uppercase shadow-xl cursor-pointer"
+            className="bg-white text-black px-6 py-3 rounded-full font-black text-[9px] tracking-[0.2em] transition-all hover:bg-orange-600 hover:text-white"
           >
             DISCOVER
           </button>
         </div>
       </div>
       {showDropdown && suggestions.length > 0 && (
-        <div className="absolute w-full mt-4 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[300]">
+        <div className="absolute w-full mt-4 bg-[#0f1115] rounded-2xl shadow-2xl border border-white/10 overflow-hidden z-[300]">
           {suggestions.map((s, i) => (
-            <div key={i} onClick={() => {setQuery(s); setShowDropdown(false); router.push(`/search?area=${encodeURIComponent(s)}`);}} className="px-6 py-4 hover:bg-slate-100 cursor-pointer font-bold border-b last:border-none transition-colors">
+            <div key={i} onClick={() => {setQuery(s); setShowDropdown(false); router.push(`/search?area=${encodeURIComponent(s)}`);}} className="px-6 py-4 hover:bg-white/5 text-white cursor-pointer font-bold border-b border-white/5 last:border-none transition-colors">
               {s}
             </div>
           ))}
@@ -75,7 +75,6 @@ function SearchContent({ properties }: { properties: any[] }) {
 export default function Home() {
   const router = useRouter();
   const [properties, setProperties] = useState<any[]>([]);
-  const [leadData, setLeadData] = useState({ name: "", phone: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -86,156 +85,138 @@ export default function Home() {
     fetchProperties();
   }, []);
 
-  const handleLeadSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!leadData.name || !leadData.phone) return alert("Please fill all fields");
-    setIsSubmitting(true);
-    const { error } = await supabase.from('leads').insert([{ full_name: leadData.name, phone: leadData.phone, property_area: "General Inquiry" }]);
-    setIsSubmitting(false);
-    if (!error) {
-      alert("Success! We will call you shortly.");
-      setLeadData({ name: "", phone: "" });
-    }
-  };
-
   return (
-    <main className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans selection:bg-orange-100">
+    <main className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-orange-600/30">
       
-      {/* 1. NAVIGATION */}
-      <nav className="fixed top-0 w-full z-[500] bg-gradient-to-b from-white/95 to-white/80 backdrop-blur-xl border-b border-slate-200 px-4 md:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 md:w-14 md:h-14 overflow-hidden rounded-xl bg-white border border-slate-100 flex items-center justify-center">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
-                className="w-full h-full object-contain p-1.5"
-                onError={(e) => { e.currentTarget.src = "https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png"; }}
-              />
-            </div>
-            <h1 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">
-              MSestates <span className="text-orange-600">& Education</span>
+      {/* 1. MINIMALIST NAV */}
+      <nav className="fixed top-0 w-full z-[500] bg-black/40 backdrop-blur-lg border-b border-white/5 px-6 py-4">
+        <div className="max-w-[1800px] mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-6">
+            <h1 className="text-lg md:text-xl font-black uppercase tracking-[0.4em]">
+              MS<span className="text-orange-600">estates</span>
             </h1>
+            <div className="h-4 w-[1px] bg-white/20 hidden md:block"></div>
+            <span className="text-[10px] font-bold tracking-[0.3em] text-slate-400 hidden md:block uppercase">Global Education</span>
           </div>
-          <div className="flex gap-4">
-            <a href="#education" className="hidden md:block bg-slate-100 text-slate-900 px-6 py-3 rounded-full font-black text-[9px] tracking-widest uppercase hover:bg-slate-200 transition-all">
-              Study Abroad
-            </a>
-            <a href="#sell" className="bg-slate-900 text-white px-6 md:px-10 py-3 rounded-full font-black text-[9px] tracking-widest uppercase hover:bg-orange-600 transition-colors">
-              Register Asset
-            </a>
+          <div className="flex items-center gap-8">
+            <a href="#concierge" className="text-[10px] font-black tracking-[0.2em] uppercase hover:text-orange-600 transition-colors">The Concierge</a>
+            <button onClick={() => router.push('/education')} className="bg-white text-black px-6 py-2.5 rounded-full font-black text-[9px] tracking-[0.2em] uppercase hover:invert transition-all">
+              Apply Now
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* 2. HERO */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-slate-900/40 z-10"></div>
-          <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2071" className="w-full h-full object-cover scale-105" alt="Hero" />
-        </div>
-        <div className="relative z-20 text-center px-6 w-full max-w-6xl">
-          <h2 className="text-5xl md:text-[8rem] font-black text-white mb-8 tracking-tighter leading-[0.9] drop-shadow-2xl">
-            Secure <br />
-            <span className="italic uppercase text-slate-200 opacity-90">Premier Holdings.</span>
-          </h2>
-          <Suspense fallback={<div className="text-white font-bold">LOADING INTERFACE...</div>}>
+      {/* 2. DUAL SPLIT HERO */}
+      <section className="relative h-screen flex flex-col md:flex-row overflow-hidden border-b border-white/5">
+        {/* Left Side: Real Estate */}
+        <div className="relative w-full md:w-1/2 h-1/2 md:h-full group cursor-pointer overflow-hidden border-r border-white/5">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6191bcbe10?q=80&w=2070" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110 opacity-60" alt="Estates" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+          <div className="relative h-full flex flex-col justify-end p-12 md:p-20 z-20">
+            <span className="text-orange-600 font-black text-[10px] tracking-[0.5em] uppercase mb-4">Elite Properties</span>
+            <h2 className="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none mb-6">Ultra<br/>Estates</h2>
             <SearchContent properties={properties} />
-          </Suspense>
+          </div>
+        </div>
+
+        {/* Right Side: Education */}
+        <div className="relative w-full md:w-1/2 h-1/2 md:h-full group cursor-pointer overflow-hidden" onClick={() => router.push('/education')}>
+          <img src="https://images.unsplash.com/photo-1525921429624-479b6a26d84d?q=80&w=2070" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110 opacity-50" alt="Education" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+          <div className="relative h-full flex flex-col justify-end p-12 md:p-20 z-20">
+            <span className="text-orange-600 font-black text-[10px] tracking-[0.5em] uppercase mb-4">Scholastic Excellence</span>
+            <h2 className="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none mb-6">Global<br/>Learning</h2>
+            <p className="text-slate-300 text-sm tracking-widest font-medium uppercase italic">United Kingdom • Australia • Canada</p>
+          </div>
         </div>
       </section>
 
-      {/* 3. EDUCATION SECTION - NEW */}
-      <section id="education" className="py-24 px-4 bg-white relative overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-gradient-to-br from-slate-50 to-slate-200 rounded-[3rem] p-8 md:p-20 border border-white flex flex-col md:flex-row items-center gap-12 shadow-inner">
-            <div className="md:w-3/5">
-              <span className="bg-orange-600 text-white px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase mb-6 inline-block">Global Academic Path</span>
-              <h2 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter uppercase leading-[0.9] mb-8">
-                Your Future in <br />
-                <span className="text-orange-600 italic">UK or Australia.</span>
-              </h2>
-              <p className="text-slate-500 text-lg md:text-xl font-medium max-w-xl mb-10 italic">
-                From luxury living to global learning. We facilitate admissions in top-tier universities across the United Kingdom and Australia.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-white px-8 py-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 group hover:border-orange-500 transition-all cursor-pointer" onClick={() => router.push('/education')}>
-                   <span className="text-3xl">🇬🇧</span>
-                   <span className="font-black uppercase tracking-widest text-xs">UK Universities</span>
-                </div>
-                <div className="bg-white px-8 py-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 group hover:border-orange-500 transition-all cursor-pointer" onClick={() => router.push('/education')}>
-                   <span className="text-3xl">🇦🇺</span>
-                   <span className="font-black uppercase tracking-widest text-xs">Australia Campus</span>
-                </div>
-              </div>
+      {/* 3. ASSET PORTFOLIO (LISTINGS) */}
+      <section className="py-32 px-6 bg-[#0a0a0a]">
+        <div className="max-w-[1800px] mx-auto">
+          <div className="flex justify-between items-end mb-20 border-b border-white/10 pb-12">
+            <div>
+              <h3 className="text-[10px] font-black tracking-[0.6em] text-orange-600 uppercase mb-4">Selected Inventory</h3>
+              <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">Current Portfolio</h2>
             </div>
-            <div className="md:w-2/5 w-full">
-               <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
-                  <div className="relative z-10">
-                    <h4 className="text-2xl font-black uppercase mb-6">Course Consultation</h4>
-                    <form onSubmit={(e) => { e.preventDefault(); router.push('/education'); }} className="space-y-4">
-                      <input type="text" placeholder="Student Name" className="w-full bg-white/10 border border-white/20 p-4 rounded-xl outline-none focus:bg-white/20 transition-all font-bold" />
-                      <input type="tel" placeholder="Contact Number" className="w-full bg-white/10 border border-white/20 p-4 rounded-xl outline-none focus:bg-white/20 transition-all font-bold" />
-                      <button className="w-full py-4 bg-orange-600 hover:bg-orange-500 text-white font-black text-xs tracking-widest uppercase rounded-xl transition-all shadow-lg">
-                        Apply for Intake 2026
-                      </button>
-                    </form>
+            <p className="text-slate-500 text-sm max-w-xs text-right italic font-medium hidden md:block">
+              Curated assets from the most desirable sectors of NCR and beyond.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+            {properties.map((item) => (
+              <div key={item.id} className="group relative" onClick={() => router.push(`/property/${item.id}`)}>
+                <div className="aspect-[4/5] overflow-hidden rounded-sm mb-8 bg-slate-900 border border-white/5">
+                  <img src={item.image_url || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070'} 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-[2s] group-hover:scale-110" 
+                    alt={item.area} />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                </div>
+                <div className="flex justify-between items-start border-b border-white/10 pb-6">
+                  <div>
+                    <h4 className="text-2xl font-black uppercase tracking-tight mb-1">{item.area}</h4>
+                    <p className="text-[10px] font-bold text-slate-500 tracking-[0.3em] uppercase">{item.tag || 'Exclusive'}</p>
                   </div>
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/20 blur-3xl -mr-16 -mt-16"></div>
-               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. LISTINGS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 px-6 max-w-7xl mx-auto py-24 relative z-[100]">
-        {properties.map((item) => (
-          <div key={item.id} className="group bg-white rounded-[2rem] border border-slate-100 p-3 shadow-lg transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl relative z-[110]">
-            <div className="h-64 md:h-80 bg-slate-50 rounded-[1.6rem] mb-6 overflow-hidden relative">
-              <img src={item.image_url || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070'} className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" alt={item.area} />
-              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase text-slate-900">
-                {item.tag || 'Legacy'}
+                  <div className="text-lg font-black text-orange-600 tracking-tighter">
+                    {item.price ? `₹ ${item.price}` : 'POA'}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="px-4 pb-4">
-                <h3 className="text-2xl font-black text-slate-900 mb-1 uppercase tracking-tight">{item.area}</h3>
-                <div className="text-xl font-bold text-orange-600 mb-6 italic">{item.price ? `₹ ${item.price}` : 'Portfolio Exclusive'}</div>
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    router.push(`/property/${item.id}`);
-                  }}
-                  className="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-orange-600 hover:to-orange-500 text-white py-4 rounded-2xl font-black text-[10px] tracking-widest uppercase transition-all duration-300 shadow-lg cursor-pointer relative z-[130] pointer-events-auto"
-                >
-                    Access Details
-                </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 5. FORM SECTION */}
-      <section id="sell" className="py-24 px-4 relative z-[100]">
-        <div className="max-w-6xl mx-auto bg-gradient-to-br from-slate-900 to-[#1a1c20] rounded-[3rem] p-10 md:p-20 border border-slate-800 shadow-3xl">
-          <div className="flex flex-col md:flex-row items-center gap-16">
-            <div className="md:w-1/2 text-white">
-              <h2 className="text-4xl md:text-7xl font-black mb-8 tracking-tighter uppercase leading-[0.85]">Anonymity<br /><span className="text-slate-500 italic">Guaranteed.</span></h2>
-              <p className="text-slate-400 text-lg md:text-xl font-light italic border-l-2 border-orange-600 pl-6">"Our mandate is the silent protection of your assets."</p>
-            </div>
-            <form onSubmit={handleLeadSubmit} className="md:w-1/2 w-full bg-white/95 backdrop-blur-xl rounded-[2rem] p-10 shadow-2xl">
-               <h4 className="text-slate-900 font-black text-2xl mb-8 uppercase tracking-tighter">Property Registration</h4>
-               <div className="space-y-5">
-                  <input type="text" placeholder="Full Name" value={leadData.name} onChange={(e) => setLeadData({...leadData, name: e.target.value})} className="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold text-slate-900" required />
-                  <input type="tel" placeholder="Mobile Line" value={leadData.phone} onChange={(e) => setLeadData({...leadData, phone: e.target.value})} className="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold text-slate-900" required />
-                  <button disabled={isSubmitting} className="w-full py-5 bg-slate-900 hover:bg-orange-600 text-white rounded-2xl font-black text-xs tracking-widest uppercase transition-all duration-300 shadow-xl">
-                    {isSubmitting ? "PROCESSING..." : "REQUEST CONSULTATION"}
-                  </button>
-               </div>
-            </form>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* 4. THE CONCIERGE (DUAL FORMS) */}
+      <section id="concierge" className="py-32 px-6 bg-[#0f1115] relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+        
+        <div className="max-w-[1400px] mx-auto">
+          <div className="text-center mb-24">
+            <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter mb-6">The Concierge</h2>
+            <p className="text-slate-400 tracking-[0.4em] uppercase text-[10px] font-black">Besoke Services for Property & Education</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-[3rem] overflow-hidden">
+            {/* Form 1: Property */}
+            <div className="bg-[#0f1115] p-12 md:p-20">
+              <h3 className="text-2xl font-black uppercase tracking-tight mb-4 italic text-orange-600 underline underline-offset-8 decoration-1">Real Estate Intake</h3>
+              <p className="text-slate-500 text-sm mb-12 font-medium tracking-wide">Register your high-value assets for our private network.</p>
+              <form className="space-y-6">
+                <input type="text" placeholder="Full Name" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-orange-600 transition-colors font-bold text-sm uppercase tracking-widest" />
+                <input type="tel" placeholder="Private Line" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-orange-600 transition-colors font-bold text-sm uppercase tracking-widest" />
+                <button className="w-full mt-12 py-5 bg-white text-black font-black text-[10px] tracking-[0.3em] uppercase hover:bg-orange-600 hover:text-white transition-all">Submit Asset</button>
+              </form>
+            </div>
+
+            {/* Form 2: Education */}
+            <div className="bg-[#0f1115] p-12 md:p-20">
+              <h3 className="text-2xl font-black uppercase tracking-tight mb-4 italic text-orange-600 underline underline-offset-8 decoration-1">Academic Intake</h3>
+              <p className="text-slate-500 text-sm mb-12 font-medium tracking-wide">Initiate your application for UK or Australian universities.</p>
+              <form className="space-y-6">
+                <input type="text" placeholder="Student Name" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-orange-600 transition-colors font-bold text-sm uppercase tracking-widest" />
+                <input type="tel" placeholder="Mobile Line" className="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-orange-600 transition-colors font-bold text-sm uppercase tracking-widest" />
+                <button className="w-full mt-12 py-5 bg-orange-600 text-white font-black text-[10px] tracking-[0.3em] uppercase hover:bg-white hover:text-black transition-all">Request Briefing</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FOOTER */}
+      <footer className="py-20 border-t border-white/5 px-6 bg-black">
+        <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+          <h2 className="text-2xl font-black uppercase tracking-[0.5em]">MSestates</h2>
+          <div className="flex gap-12 text-[9px] font-bold tracking-[0.3em] text-slate-500 uppercase">
+            <span className="cursor-pointer hover:text-white transition-colors">Instagram</span>
+            <span className="cursor-pointer hover:text-white transition-colors">LinkedIn</span>
+            <span className="cursor-pointer hover:text-white transition-colors">WhatsApp</span>
+          </div>
+          <p className="text-[9px] text-slate-600 font-bold uppercase tracking-widest">© 2026 MSestates & Education. All Rights Reserved.</p>
+        </div>
+      </footer>
     </main>
   );
 }
