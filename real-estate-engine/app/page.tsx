@@ -153,35 +153,37 @@ export default function Home() {
     <main className="min-h-screen bg-neutral-50 text-slate-900 font-sans selection:bg-amber-100">
       
       {/* 1. NAVIGATION */}
-      <nav className="fixed top-0 w-full z-[500] bg-white/70 backdrop-blur-2xl border-b border-slate-200/50 px-8 py-5">
-        <div className="max-w-[1600px] mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <div className="w-12 h-12 overflow-hidden rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+     <nav className="fixed top-0 w-full z-[500] bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+        <div className="max-w-[1400px] mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-5">
+            <div className="w-10 h-10 overflow-hidden rounded-lg bg-white border border-slate-100 flex items-center justify-center shadow-sm">
               <img 
-                src="https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png" 
+                src="/logo.png" 
                 alt="MS Logo" 
-                className="w-full h-full object-contain p-1.5"
+                className="w-full h-full object-contain p-1"
+                onError={(e) => { e.currentTarget.src = "https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png"; }}
               />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900 leading-none">
-                MS<span className="text-amber-600 italic">ESTATES</span>
+              <h1 className="text-xl font-light uppercase tracking-[0.3em] text-slate-900 leading-none">
+                MS<span className="font-black">ESTATES</span>
               </h1>
-              <span className="text-[9px] font-black uppercase tracking-[0.5em] text-slate-400 mt-1">Global Advisory</span>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="h-px w-4 bg-orange-600"></div>
+                <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-400">Education Advisory</span>
+              </div>
             </div>
           </div>
-          <div className="hidden md:flex gap-12 items-center font-black text-[11px] uppercase tracking-[0.2em]">
-            <a href="#properties" className="hover:text-amber-600 transition-colors">Portfolio</a>
-            <a href="#contact" className="hover:text-amber-600 transition-colors">Contact</a>
-            <button 
-              onClick={() => router.push('/education')} 
-              className="bg-slate-900 text-white px-8 py-4 rounded-2xl hover:bg-amber-600 transition-all shadow-2xl hover:-translate-y-1"
-            >
+          <div className="hidden md:flex gap-10 items-center font-bold text-[10px] uppercase tracking-[0.2em]">
+            <a href="#properties" className="hover:text-orange-600 transition-colors">Properties</a>
+            <a href="#contact" className="hover:text-orange-600 transition-colors">Contact</a>
+            <button onClick={() => router.push('/education')} className="bg-slate-900 text-white px-7 py-3 rounded-full hover:bg-orange-600 transition-all shadow-lg">
               Admissions 2026
             </button>
           </div>
         </div>
       </nav>
+    
 
       {/* 2. HERO SECTION */}
       <section className="relative h-screen flex flex-col md:flex-row overflow-hidden">
