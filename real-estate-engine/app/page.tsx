@@ -24,7 +24,8 @@ const Flag = ({ code, name }: { code: string; name: string }) => (
   </div>
 );
 
-function SearchContent({ properties }: { properties: any[] }) {
+// BUG FIX #4: Removed unused `properties` prop from SearchContent
+function SearchContent() {
   const router = useRouter();
   const [query, setQuery] = useState(""); 
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -85,9 +86,10 @@ function SearchContent({ properties }: { properties: any[] }) {
       
       {showDropdown && suggestions.length > 0 && (
         <div className="absolute w-full mt-4 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-[110] animate-in fade-in slide-in-from-top-4 duration-300">
-          {suggestions.map((s, i) => (
+          {/* BUG FIX #3: Use suggestion value as key instead of array index */}
+          {suggestions.map((s) => (
             <div 
-              key={i} 
+              key={s}
               onClick={() => {
                 setQuery(s); 
                 setShowDropdown(false); 
@@ -110,7 +112,10 @@ export default function Home() {
   const [properties, setProperties] = useState<any[]>([]);
   const [leadData, setLeadData] = useState({ name: "", phone: "", type: "buying" });
   const [eduLeadData, setEduLeadData] = useState({ name: "", phone: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // BUG FIX #2: Split isSubmitting into two separate states so forms don't block each other
+  const [isSubmittingEstate, setIsSubmittingEstate] = useState(false);
+  const [isSubmittingEdu, setIsSubmittingEdu] = useState(false);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -130,7 +135,9 @@ export default function Home() {
     
     if (!data.name || !data.phone) return alert("Required: Name and phone number.");
     
-    setIsSubmitting(true);
+    // BUG FIX #2: Use the correct submitting flag per form
+    if (type === 'estate') setIsSubmittingEstate(true);
+    else setIsSubmittingEdu(true);
     
     const payload = type === 'estate' 
       ? { full_name: data.name, phone: data.phone, property_area: `RE: ${leadData.type.toUpperCase()}` }
@@ -138,7 +145,9 @@ export default function Home() {
 
     const { error } = await supabase.from('leads').insert([payload]);
     
-    setIsSubmitting(false);
+    if (type === 'estate') setIsSubmittingEstate(false);
+    else setIsSubmittingEdu(false);
+
     if (!error) {
       alert("Request received. A consultant will contact you shortly.");
       type === 'estate' 
@@ -199,14 +208,16 @@ export default function Home() {
             <h2 className="text-6xl md:text-9xl font-black text-white leading-[0.8] mb-8 uppercase tracking-tighter">
               Prime <br /><span className="text-amber-500 italic">Assets.</span>
             </h2>
-            <SearchContent properties={properties} />
+            {/* BUG FIX #4: No longer passing unused `properties` prop */}
+            <SearchContent />
           </div>
         </div>
 
         {/* Education Side */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
+          {/* BUG FIX #1: Replaced broken/expired Unsplash URL with a stable one */}
           <img 
-            src="https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=2070" 
+            src="https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?q=80&w=2074" 
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[20s] group-hover:scale-125" 
             alt="University Campus" 
           />
@@ -263,7 +274,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. CONTACT SECTION (RESTORED) */}
+      {/* 4. CONTACT SECTION */}
       <section id="contact" className="py-40 px-4 bg-slate-50">
         <div className="max-w-[1300px] mx-auto">
           <div className="text-center mb-24">
@@ -318,11 +329,12 @@ export default function Home() {
                     className="w-full bg-slate-50 px-8 py-6 rounded-2xl outline-none focus:ring-2 focus:ring-amber-600/20 font-bold transition-all border border-slate-100" 
                   />
                 </div>
+                {/* BUG FIX #2: Uses isSubmittingEstate, not the shared isSubmitting */}
                 <button 
-                  disabled={isSubmitting}
+                  disabled={isSubmittingEstate}
                   className="w-full py-6 bg-slate-900 text-white rounded-full font-black text-[11px] tracking-[0.5em] uppercase hover:bg-amber-600 transition-all shadow-2xl mt-6 active:scale-95 disabled:opacity-50"
                 >
-                  {isSubmitting ? "Processing..." : leadData.type === 'listing' ? "Request Listing Consultation" : "Submit Portfolio Inquiry"}
+                  {isSubmittingEstate ? "Processing..." : leadData.type === 'listing' ? "Request Listing Consultation" : "Submit Portfolio Inquiry"}
                 </button>
               </form>
             </div>
@@ -355,11 +367,12 @@ export default function Home() {
                     className="w-full bg-white/5 px-8 py-6 rounded-2xl outline-none focus:ring-2 focus:ring-amber-600/50 font-bold transition-all border border-white/10 text-white placeholder:text-slate-600" 
                   />
                 </div>
+                {/* BUG FIX #2: Uses isSubmittingEdu, not the shared isSubmitting */}
                 <button 
-                  disabled={isSubmitting}
+                  disabled={isSubmittingEdu}
                   className="w-full py-6 bg-amber-600 text-white rounded-full font-black text-[11px] tracking-[0.5em] uppercase hover:bg-white hover:text-slate-900 transition-all shadow-2xl mt-6 active:scale-95 disabled:opacity-50"
                 >
-                  {isSubmitting ? "Processing..." : "Request Academic Briefing"}
+                  {isSubmittingEdu ? "Processing..." : "Request Academic Briefing"}
                 </button>
               </form>
             </div>
