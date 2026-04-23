@@ -9,7 +9,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// --- Refined Flag Component ---
 const Flag = ({ code, name }: { code: string; name: string }) => (
   <div className="flex flex-col items-center gap-2 group cursor-default">
     <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl transition-all duration-500 group-hover:rounded-full group-hover:border-amber-500 group-hover:scale-110">
@@ -109,6 +108,8 @@ function SearchContent({ properties }: { properties: any[] }) {
 export default function Home() {
   const router = useRouter();
   const [properties, setProperties] = useState<any[]>([]);
+  const [leadData, setLeadData] = useState({ name: "", phone: "", type: "buying" });
+  const [eduLeadData, setEduLeadData] = useState({ name: "", phone: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -123,6 +124,31 @@ export default function Home() {
     fetchProperties();
   }, []);
 
+  const handleLeadSubmit = async (e: React.FormEvent, type: string) => {
+    e.preventDefault();
+    const data = type === 'estate' ? leadData : eduLeadData;
+    
+    if (!data.name || !data.phone) return alert("Required: Name and phone number.");
+    
+    setIsSubmitting(true);
+    
+    const payload = type === 'estate' 
+      ? { full_name: data.name, phone: data.phone, property_area: `RE: ${leadData.type.toUpperCase()}` }
+      : { full_name: data.name, phone: data.phone, property_area: "Education Inquiry" };
+
+    const { error } = await supabase.from('leads').insert([payload]);
+    
+    setIsSubmitting(false);
+    if (!error) {
+      alert("Request received. A consultant will contact you shortly.");
+      type === 'estate' 
+        ? setLeadData({ name: "", phone: "", type: "buying" }) 
+        : setEduLeadData({ name: "", phone: "" });
+    } else {
+      alert("Submission error. Please try again.");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-neutral-50 text-slate-900 font-sans selection:bg-amber-100">
       
@@ -130,13 +156,11 @@ export default function Home() {
       <nav className="fixed top-0 w-full z-[500] bg-white/70 backdrop-blur-2xl border-b border-slate-200/50 px-8 py-5">
         <div className="max-w-[1600px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
-            <div className="w-12 h-12 overflow-hidden rounded-2xl bg-slate-900 flex items-center justify-center shadow-xl">
-              {/* FALLBACK LOGO LOGIC */}
+            <div className="w-12 h-12 overflow-hidden rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-sm">
               <img 
-                src="/logo.png" 
-                onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/609/609803.png" }}
-                alt="Logo" 
-                className="w-full h-full object-contain p-2 invert"
+                src="https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png" 
+                alt="MS Logo" 
+                className="w-full h-full object-contain p-1.5"
               />
             </div>
             <div className="flex flex-col">
@@ -161,7 +185,7 @@ export default function Home() {
 
       {/* 2. HERO SECTION */}
       <section className="relative h-screen flex flex-col md:flex-row overflow-hidden">
-        {/* Real Estate Side - Gurgaon Vibes */}
+        {/* Real Estate Side */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden border-r border-white/10">
           <img 
             src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070" 
@@ -177,7 +201,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Education Side - Ivy League Vibes */}
+        {/* Education Side */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=2070" 
@@ -193,7 +217,7 @@ export default function Home() {
               <Flag code="au" name="Australia" />
             </div>
             <h2 className="text-6xl md:text-9xl font-black text-white leading-[0.8] mb-8 uppercase tracking-tighter">
-              World <br /><span className="text-amber-500 italic">Class.</span>
+              Global <br /><span className="text-amber-500 italic">Admissions.</span>
             </h2>
             <button 
               onClick={() => router.push('/education')}
@@ -237,17 +261,121 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. FOOTER - DARK & CLEAN */}
-      <footer className="bg-slate-900 py-40 px-8 text-white">
+      {/* 4. CONTACT SECTION (RESTORED) */}
+      <section id="contact" className="py-40 px-4 bg-slate-50">
+        <div className="max-w-[1300px] mx-auto">
+          <div className="text-center mb-24">
+            <span className="text-[11px] font-black tracking-[0.8em] uppercase text-amber-600 mb-6 block">Concierge</span>
+            <h2 className="text-6xl md:text-7xl font-black uppercase tracking-tighter text-slate-900">Get In Touch.</h2>
+            <div className="h-1.5 w-24 bg-amber-600/20 mx-auto mt-8 rounded-full"></div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Real Estate Form */}
+            <div className="bg-white rounded-[3rem] p-12 md:p-20 shadow-2xl border border-slate-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-full opacity-50"></div>
+              <div className="flex flex-col md:flex-row justify-between items-start mb-14 gap-8">
+                <div>
+                  <h4 className="text-4xl font-black uppercase tracking-tighter text-slate-900 mb-3">Real Estate</h4>
+                  <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Asset Management & Sales</p>
+                </div>
+                <div className="flex bg-slate-50 p-1.5 rounded-full border border-slate-100 shadow-inner">
+                   <button 
+                    onClick={() => setLeadData({...leadData, type: 'buying'})}
+                    className={`px-6 py-3 rounded-full text-[10px] font-black uppercase transition-all ${leadData.type === 'buying' ? 'bg-slate-900 text-white shadow-xl' : 'text-slate-400 hover:text-slate-900'}`}
+                   >
+                     Buy
+                   </button>
+                   <button 
+                    onClick={() => setLeadData({...leadData, type: 'listing'})}
+                    className={`px-6 py-3 rounded-full text-[10px] font-black uppercase transition-all ${leadData.type === 'listing' ? 'bg-amber-600 text-white shadow-xl' : 'text-slate-400 hover:text-slate-900'}`}
+                   >
+                     List
+                   </button>
+                </div>
+              </div>
+
+              <form onSubmit={(e) => handleLeadSubmit(e, 'estate')} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4">Legal Full Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter your name" 
+                    value={leadData.name}
+                    onChange={(e) => setLeadData({...leadData, name: e.target.value})}
+                    className="w-full bg-slate-50 px-8 py-6 rounded-2xl outline-none focus:ring-2 focus:ring-amber-600/20 font-bold transition-all border border-slate-100" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4">Primary Contact</label>
+                  <input 
+                    type="tel" 
+                    placeholder="+91 00000 00000" 
+                    value={leadData.phone}
+                    onChange={(e) => setLeadData({...leadData, phone: e.target.value})}
+                    className="w-full bg-slate-50 px-8 py-6 rounded-2xl outline-none focus:ring-2 focus:ring-amber-600/20 font-bold transition-all border border-slate-100" 
+                  />
+                </div>
+                <button 
+                  disabled={isSubmitting}
+                  className="w-full py-6 bg-slate-900 text-white rounded-full font-black text-[11px] tracking-[0.5em] uppercase hover:bg-amber-600 transition-all shadow-2xl mt-6 active:scale-95 disabled:opacity-50"
+                >
+                  {isSubmitting ? "Processing..." : leadData.type === 'listing' ? "Request Listing Consultation" : "Submit Portfolio Inquiry"}
+                </button>
+              </form>
+            </div>
+
+            {/* Education Form */}
+            <div className="bg-slate-900 rounded-[3rem] p-12 md:p-20 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full"></div>
+              <div className="mb-14">
+                <h4 className="text-4xl font-black uppercase tracking-tighter text-white mb-3">Education</h4>
+                <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Global Academic Placement</p>
+              </div>
+              <form onSubmit={(e) => handleLeadSubmit(e, 'edu')} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-4">Student Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter student name" 
+                    value={eduLeadData.name}
+                    onChange={(e) => setEduLeadData({...eduLeadData, name: e.target.value})}
+                    className="w-full bg-white/5 px-8 py-6 rounded-2xl outline-none focus:ring-2 focus:ring-amber-600/50 font-bold transition-all border border-white/10 text-white placeholder:text-slate-600" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-4">Parent/Student Contact</label>
+                  <input 
+                    type="tel" 
+                    placeholder="+91 00000 00000" 
+                    value={eduLeadData.phone}
+                    onChange={(e) => setEduLeadData({...eduLeadData, phone: e.target.value})}
+                    className="w-full bg-white/5 px-8 py-6 rounded-2xl outline-none focus:ring-2 focus:ring-amber-600/50 font-bold transition-all border border-white/10 text-white placeholder:text-slate-600" 
+                  />
+                </div>
+                <button 
+                  disabled={isSubmitting}
+                  className="w-full py-6 bg-amber-600 text-white rounded-full font-black text-[11px] tracking-[0.5em] uppercase hover:bg-white hover:text-slate-900 transition-all shadow-2xl mt-6 active:scale-95 disabled:opacity-50"
+                >
+                  {isSubmitting ? "Processing..." : "Request Academic Briefing"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FOOTER */}
+      <footer className="bg-slate-950 py-32 px-8 text-white border-t border-white/5">
         <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
           <div className="lg:col-span-2">
-            <h1 className="text-5xl font-black uppercase tracking-tighter mb-10">MS<span className="text-amber-500 italic">ESTATES</span></h1>
-            <p className="text-slate-400 text-lg max-w-md leading-relaxed">
+            <h1 className="text-4xl font-black uppercase tracking-tighter mb-8">MS<span className="text-amber-500 italic">ESTATES</span></h1>
+            <p className="text-slate-500 text-sm max-w-md leading-relaxed font-medium">
               Elevating real estate standards across the NCR and paving pathways to global academic excellence.
             </p>
           </div>
           <div className="space-y-8">
-            <h5 className="text-amber-500 font-black text-xs uppercase tracking-widest">Divisions</h5>
+            <h5 className="text-amber-500 font-black text-[10px] uppercase tracking-[0.3em]">Divisions</h5>
             <ul className="space-y-4 text-slate-400 font-bold uppercase text-[10px] tracking-widest">
               <li className="hover:text-white cursor-pointer transition-colors">Residential Luxury</li>
               <li className="hover:text-white cursor-pointer transition-colors">Commercial Real Estate</li>
@@ -255,7 +383,7 @@ export default function Home() {
             </ul>
           </div>
           <div className="space-y-8">
-            <h5 className="text-amber-500 font-black text-xs uppercase tracking-widest">Contact</h5>
+            <h5 className="text-amber-500 font-black text-[10px] uppercase tracking-[0.3em]">Contact</h5>
             <ul className="space-y-4 text-slate-400 font-bold uppercase text-[10px] tracking-widest">
               <li className="hover:text-white cursor-pointer transition-colors">Gurgaon Office</li>
               <li className="hover:text-white cursor-pointer transition-colors">+91 000 000 0000</li>
