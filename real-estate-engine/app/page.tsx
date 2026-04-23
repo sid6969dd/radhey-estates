@@ -73,14 +73,12 @@ function SearchContent() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length > 1 && setShowDropdown(true)}
-          placeholder="Search areas (e.g. Golf Course Road)..." 
-          {/* BUG FIX #5: min-w-0 lets the input shrink so the button is never pushed out */}
+          placeholder="Search areas..." 
           className="flex-grow min-w-0 bg-transparent px-4 md:px-6 py-4 text-slate-900 placeholder:text-slate-400 font-bold outline-none text-base md:text-lg" 
         />
         <button 
           onClick={() => query.trim() && router.push(`/search?area=${encodeURIComponent(query)}`)}
-          {/* BUG FIX #5: shrink-0 prevents the button collapsing; px-4 md:px-10 fits mobile */}
-          className="shrink-0 bg-amber-600 text-white px-4 md:px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all hover:bg-slate-900 uppercase shadow-lg active:scale-95"
+          className="shrink-0 bg-amber-600 text-white px-5 md:px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all hover:bg-slate-900 uppercase shadow-lg active:scale-95"
         >
           Explore
         </button>
@@ -207,8 +205,7 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-slate-950/60 group-hover:bg-slate-950/40 transition-colors duration-700"></div>
           <div className="relative h-full flex flex-col justify-end p-12 md:p-24 z-20">
-            {/* BUG FIX #5: Fluid font size prevents "Assets." overflowing on narrow screens */}
-            <h2 className="text-[clamp(2.8rem,11vw,9rem)] font-black text-white leading-[0.85] mb-8 uppercase tracking-tighter">
+            <h2 className="text-5xl sm:text-7xl md:text-9xl font-black text-white leading-[0.85] mb-8 uppercase tracking-tighter">
               Prime <br /><span className="text-amber-500 italic">Assets.</span>
             </h2>
             {/* BUG FIX #4: No longer passing unused `properties` prop */}
@@ -232,8 +229,7 @@ export default function Home() {
               <Flag code="ca" name="Canada" />
               <Flag code="au" name="Australia" />
             </div>
-            {/* BUG FIX #6: "ADMISSIONS." was overflowing on mobile at text-6xl + tracking-tighter */}
-            <h2 className="text-[clamp(2.8rem,11vw,9rem)] font-black text-white leading-[0.85] mb-8 uppercase tracking-tighter">
+            <h2 className="text-5xl sm:text-7xl md:text-9xl font-black text-white leading-[0.85] mb-8 uppercase tracking-tighter">
               Global <br /><span className="text-amber-500 italic">Admissions.</span>
             </h2>
             <button 
