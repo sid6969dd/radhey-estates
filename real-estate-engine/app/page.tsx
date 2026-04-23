@@ -9,7 +9,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Helper for Flag Icons (Using standard circular icon placeholders)
 const Flag = ({ code, name }: { code: string; name: string }) => (
   <div className="flex flex-col items-center gap-2 group">
     <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-100 shadow-sm transition-transform group-hover:scale-110">
@@ -104,11 +103,9 @@ export default function Home() {
     const data = type === 'estate' ? leadData : eduLeadData;
     if (!data.name || !data.phone) return alert("Please enter your name and phone number.");
     setIsSubmitting(true);
-    
     const payload = type === 'estate' 
       ? { full_name: data.name, phone: data.phone, property_area: `RE: ${leadData.type.toUpperCase()}` }
       : { full_name: data.name, phone: data.phone, property_area: "Education Inquiry" };
-
     const { error } = await supabase.from('leads').insert([payload]);
     setIsSubmitting(false);
     if (!error) {
@@ -120,7 +117,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#FCFBF9] text-slate-900 font-sans">
       
-      {/* 1. NAVIGATION - CLASSY REFINED LOGO */}
+      {/* 1. NAVIGATION - CLASSY REFINED LOGO (UNTOUCHED) */}
       <nav className="fixed top-0 w-full z-[500] bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-5">
@@ -171,17 +168,17 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Education Side */}
-        <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
+        {/* Education Side - BACKGROUND IMAGE ADDED */}
+        <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden border-t md:border-t-0 md:border-l border-white/10">
           <img 
-            src="https://images.unsplash.com/photo-1523050335102-c6744729ea24?q=80&w=2070" 
+            src="https://images.unsplash.com/photo-1541339907198-e08756eaa589?q=80&w=2070" 
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
-            alt="Education" 
+            alt="Global University" 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent z-10"></div>
           <div className="relative h-full flex flex-col justify-end p-10 md:p-20 z-20">
             {/* DESTINATION FLAGS */}
-            <div className="flex gap-6 mb-8 items-center border-l border-white/20 pl-6">
+            <div className="flex gap-6 mb-8 items-center border-l border-white/20 pl-6 flex-wrap">
               <Flag code="gb" name="UK" />
               <Flag code="us" name="USA" />
               <Flag code="ca" name="Canada" />
@@ -202,7 +199,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. PROPERTY SECTION */}
+      {/* Featured Properties Grid */}
       <section id="properties" className="py-32 px-6 bg-white">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-6">
@@ -214,9 +211,8 @@ export default function Home() {
               Curated selection of North India's most valuable real estate assets.
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {properties.map((item) => (
+            {properties.slice(0, 3).map((item) => (
               <div key={item.id} className="group cursor-pointer" onClick={() => router.push(`/property/${item.id}`)}>
                 <div className="aspect-[4/5] rounded-[2rem] overflow-hidden mb-8 shadow-xl relative">
                   <img 
@@ -224,9 +220,6 @@ export default function Home() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                     alt={item.area} 
                   />
-                  <div className="absolute top-6 right-6 bg-white/95 px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-900 shadow-lg">
-                    {item.tag || 'Exclusive'}
-                  </div>
                 </div>
                 <h4 className="text-2xl font-black uppercase tracking-tight text-slate-900 mb-1">{item.area}</h4>
                 <p className="text-xl font-light text-orange-600 italic">{item.price ? `₹ ${item.price}` : 'Price on Request'}</p>
@@ -236,7 +229,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. CONTACT SECTION - LIST YOUR PROPERTIES ADDED */}
+      {/* Contact Section */}
       <section id="contact" className="py-32 px-4 bg-slate-50">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-20">
@@ -244,7 +237,6 @@ export default function Home() {
             <h2 className="text-5xl font-black uppercase tracking-tighter text-slate-900">Get In Touch.</h2>
             <div className="h-1 w-20 bg-slate-200 mx-auto mt-6"></div>
           </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Real Estate Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
@@ -253,7 +245,6 @@ export default function Home() {
                   <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Real Estate</h4>
                   <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Property Registration & Sales</p>
                 </div>
-                {/* INQUIRY TYPE SELECTOR */}
                 <div className="flex bg-slate-50 p-1 rounded-full border border-slate-100">
                    <button 
                     onClick={() => setLeadData({...leadData, type: 'buying'})}
@@ -269,31 +260,14 @@ export default function Home() {
                    </button>
                 </div>
               </div>
-
               <form onSubmit={(e) => handleLeadSubmit(e, 'estate')} className="space-y-6">
-                <input 
-                  type="text" 
-                  placeholder="Full Name" 
-                  value={leadData.name}
-                  onChange={(e) => setLeadData({...leadData, name: e.target.value})}
-                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
-                />
-                <input 
-                  type="tel" 
-                  placeholder="Mobile Number" 
-                  value={leadData.phone}
-                  onChange={(e) => setLeadData({...leadData, phone: e.target.value})}
-                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
-                />
-                <button 
-                  disabled={isSubmitting}
-                  className="w-full py-5 bg-slate-900 text-white rounded-full font-black text-[10px] tracking-[0.4em] uppercase hover:bg-orange-600 transition-all shadow-xl mt-4"
-                >
+                <input type="text" placeholder="Full Name" value={leadData.name} onChange={(e) => setLeadData({...leadData, name: e.target.value})} className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none border border-slate-100" />
+                <input type="tel" placeholder="Mobile Number" value={leadData.phone} onChange={(e) => setLeadData({...leadData, phone: e.target.value})} className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none border border-slate-100" />
+                <button className="w-full py-5 bg-slate-900 text-white rounded-full font-black text-[10px] tracking-[0.4em] uppercase hover:bg-orange-600 transition-all shadow-xl mt-4">
                   {isSubmitting ? "Processing..." : leadData.type === 'listing' ? "Request Listing Consultation" : "Submit Inquiry"}
                 </button>
               </form>
             </div>
-
             {/* Education Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
               <div className="mb-10">
@@ -301,24 +275,9 @@ export default function Home() {
                 <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">International Admissions Advisory</p>
               </div>
               <form onSubmit={(e) => handleLeadSubmit(e, 'edu')} className="space-y-6">
-                <input 
-                  type="text" 
-                  placeholder="Student Name" 
-                  value={eduLeadData.name}
-                  onChange={(e) => setEduLeadData({...eduLeadData, name: e.target.value})}
-                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
-                />
-                <input 
-                  type="tel" 
-                  placeholder="Contact Number" 
-                  value={eduLeadData.phone}
-                  onChange={(e) => setEduLeadData({...eduLeadData, phone: e.target.value})}
-                  className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none focus:ring-2 focus:ring-orange-600/10 font-bold transition-all border border-slate-100" 
-                />
-                <button 
-                  disabled={isSubmitting}
-                  className="w-full py-5 bg-orange-600 text-white rounded-full font-black text-[10px] tracking-[0.4em] uppercase hover:bg-slate-900 transition-all shadow-xl mt-4"
-                >
+                <input type="text" placeholder="Student Name" value={eduLeadData.name} onChange={(e) => setEduLeadData({...eduLeadData, name: e.target.value})} className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none border border-slate-100" />
+                <input type="tel" placeholder="Contact Number" value={eduLeadData.phone} onChange={(e) => setEduLeadData({...eduLeadData, phone: e.target.value})} className="w-full bg-slate-50 px-8 py-5 rounded-2xl outline-none border border-slate-100" />
+                <button className="w-full py-5 bg-orange-600 text-white rounded-full font-black text-[10px] tracking-[0.4em] uppercase hover:bg-slate-900 transition-all shadow-xl mt-4">
                   {isSubmitting ? "Processing..." : "Request Briefing"}
                 </button>
               </form>
@@ -327,37 +286,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. FOOTER */}
-      <footer className="py-24 bg-white px-8 border-t border-slate-100">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
-            <div>
-              <h1 className="text-2xl font-light uppercase tracking-[0.4em] text-slate-900 leading-none">
-                MS<span className="font-black">ESTATES</span>
-              </h1>
-              <p className="text-slate-300 text-[9px] font-bold uppercase tracking-widest mt-4">Premier Real Estate & Education Advisory 2026</p>
-            </div>
-            <div className="flex gap-20">
-              <div className="space-y-4">
-                <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Connect</h5>
-                <div className="flex flex-col gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  <span className="hover:text-orange-600 cursor-pointer transition-colors">LinkedIn</span>
-                  <span className="hover:text-orange-600 cursor-pointer transition-colors">Instagram</span>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Legal</h5>
-                <div className="flex flex-col gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  <span className="hover:text-orange-600 cursor-pointer transition-colors">Privacy</span>
-                  <span className="hover:text-orange-600 cursor-pointer transition-colors">Terms</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="pt-12 border-t border-slate-50 flex justify-between items-center">
-            <p className="text-[9px] text-slate-300 font-black uppercase tracking-[0.5em]">© 2026 MSestates. Beyond Excellence.</p>
-          </div>
-        </div>
+      <footer className="py-24 bg-white px-8 border-t border-slate-100 text-center">
+        <p className="text-[9px] text-slate-300 font-black uppercase tracking-[0.5em]">© 2026 MSestates. Beyond Excellence.</p>
       </footer>
     </main>
   );
