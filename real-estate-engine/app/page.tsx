@@ -54,8 +54,8 @@ function SearchContent({ properties }: { properties: any[] }) {
   }, [query]);
 
   return (
-    <div className="relative w-full max-w-lg z-[210]" ref={dropdownRef}>
-      <div className="bg-white/95 backdrop-blur-md p-1.5 rounded-full border border-slate-200 shadow-xl flex items-center">
+    <div className="relative w-full max-w-lg z-[100]" ref={dropdownRef}>
+      <div className="bg-white/95 backdrop-blur-md p-1.5 rounded-full border border-slate-200 shadow-xl flex items-center relative z-[110]">
         <input 
           type="text" 
           value={query}
@@ -66,13 +66,13 @@ function SearchContent({ properties }: { properties: any[] }) {
         />
         <button 
           onClick={() => query.trim() && router.push(`/search?area=${encodeURIComponent(query)}`)}
-          className="bg-slate-900 text-white px-8 py-3.5 rounded-full font-bold text-[11px] tracking-widest transition-all hover:bg-orange-600 uppercase shadow-md"
+          className="bg-slate-900 text-white px-8 py-3.5 rounded-full font-bold text-[11px] tracking-widest transition-all hover:bg-orange-600 uppercase shadow-md relative z-[120]"
         >
           Search
         </button>
       </div>
       {showDropdown && suggestions.length > 0 && (
-        <div className="absolute w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[300]">
+        <div className="absolute w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[150]">
           {suggestions.map((s, i) => (
             <div key={i} onClick={() => {setQuery(s); setShowDropdown(false); router.push(`/search?area=${encodeURIComponent(s)}`);}} className="px-6 py-4 hover:bg-slate-50 text-slate-800 cursor-pointer font-semibold border-b border-slate-50 last:border-none">
               {s}
@@ -120,19 +120,16 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#FCFBF9] text-slate-900 font-sans selection:bg-orange-100">
       
-      {/* 1. NAVIGATION - LOGO FIXED */}
-      <nav className="fixed top-0 w-full z-[500] bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+      {/* 1. NAVIGATION - LOGO FIX */}
+      <nav className="fixed top-0 w-full z-[1000] bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-5">
-            <div className="w-10 h-10 overflow-hidden rounded-lg bg-white border border-slate-100 flex items-center justify-center shadow-sm">
-              <img 
-                src="https://sid6969dd.github.io/radhey-estates/real-estate-engine/public/logo.png" 
+            {/* Logo box with high z-index and explicit size */}
+            <div className="w-12 h-12 relative flex items-center justify-center bg-slate-50 rounded-xl overflow-hidden border border-slate-100 shadow-inner">
+               <img 
+                src="https://www.svgrepo.com/show/491950/property.svg" 
                 alt="MS Logo" 
-                className="w-full h-full object-contain p-1"
-                onError={(e) => {
-                  // Fallback if the custom URL fails
-                  e.currentTarget.src = "https://www.svgrepo.com/show/491950/property.svg";
-                }}
+                className="w-8 h-8 object-contain"
               />
             </div>
             <div className="flex flex-col">
@@ -156,12 +153,12 @@ export default function Home() {
       </nav>
 
       {/* 2. HERO SECTION */}
-      <section className="relative h-screen flex flex-col md:flex-row overflow-hidden">
+      <section className="relative h-screen flex flex-col md:flex-row overflow-hidden pt-20">
         {/* Real Estate Side */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110 z-0" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
             alt="Real Estate" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent z-10"></div>
@@ -174,11 +171,11 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Education Side */}
+        {/* Education Side - FIXED IMAGE URL */}
         <div className="relative w-full md:w-1/2 h-1/2 md:h-full group overflow-hidden border-t md:border-t-0 md:border-l border-white/10">
           <img 
-            src="https://images.unsplash.com/photo-1541339907198-e08756ebafe1?q=80&w=2070" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110 z-0" 
+            src="https://images.unsplash.com/photo-1523050853063-880c693466ad?q=80&w=2070" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[5s] group-hover:scale-110" 
             alt="Education" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent z-10"></div>
@@ -196,7 +193,7 @@ export default function Home() {
             </h2>
             <button 
               onClick={() => router.push('/education')}
-              className="w-fit bg-white text-slate-900 px-12 py-5 rounded-full font-bold text-[10px] tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white transition-all shadow-2xl"
+              className="w-fit bg-white text-slate-900 px-12 py-5 rounded-full font-bold text-[10px] tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white transition-all shadow-2xl relative z-30"
             >
               Start Your Journey
             </button>
@@ -218,7 +215,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {properties.map((item) => (
+            {properties.slice(0, 3).map((item) => (
               <div key={item.id} className="group cursor-pointer" onClick={() => router.push(`/property/${item.id}`)}>
                 <div className="aspect-[4/5] rounded-[2rem] overflow-hidden mb-8 shadow-xl relative">
                   <img 
@@ -248,6 +245,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Real Estate Lead Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
               <div className="flex flex-col sm:flex-row justify-between items-start mb-10 gap-4">
                 <div>
@@ -294,6 +292,7 @@ export default function Home() {
               </form>
             </div>
 
+            {/* Education Lead Form */}
             <div className="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-xl border border-slate-100">
               <div className="mb-10">
                 <h4 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Education</h4>
