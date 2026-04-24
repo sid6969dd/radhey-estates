@@ -255,7 +255,7 @@ export default function Home() {
               <div key={item.id} className="group cursor-pointer" onClick={() => router.push(`/property/${item.id}`)}>
                 <div className="aspect-[3/4] rounded-[3rem] overflow-hidden mb-8 shadow-2xl relative">
                   <img 
-                    src={item.image_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070'} 
+                    src={image_url?.[0] || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070'} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
                     alt={item.area} 
                   />
